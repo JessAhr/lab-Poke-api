@@ -1,79 +1,77 @@
 let currentPokemon = null;
+let favoritos = [];
 
 function searchPokemon() {
-  const name = document.getElementById("pokemonInput").value.trim().toLowerCase();
-  const url = `https://pokeapi.co/api/v2/pokemon/${name}`;
+  const nombre = document.getElementById("pokemonInput").value.toLowerCase();
+  const resultado = document.getElementById("resultado");
+  resultado.innerHTML = "";
 
-  fetch(url)
+  fetch(`https://pokeapi.co/api/v2/pokemon/${nombre}`)
     .then(response => {
-      if (!response.ok) throw new Error("No encontrado");
+      if (!response.ok) throw new Error("Pokémon no encontrado");
       return response.json();
     })
     .then(data => {
       currentPokemon = {
-        name: data.name,
-        image: data.sprites.front_default
+        nombre: data.name,
+        imagen: data.sprites.front_default
       };
 
-      const resultadoDiv = document.getElementById("resultado");
-      resultadoDiv.innerHTML = `
-        <div class="pokemon-card">
-          <img src="${currentPokemon.image}" alt="${currentPokemon.name}">
-          <div class="pokemon-name">${currentPokemon.name}</div>
-        </div>
+      const card = document.createElement("div");
+      card.className = "pokemon-card";
+
+      card.innerHTML = `
+        <img src="${currentPokemon.imagen}" alt="${currentPokemon.nombre}">
+        <div class="pokemon-name">${currentPokemon.nombre}</div>
       `;
+
+      resultado.appendChild(card);
     })
     .catch(error => {
-      alert("¡Error! Pokémon no encontrado. Verifica que esté bien escrito.");
+      resultado.innerHTML = `<p class="text-danger fw-bold">${error.message}</p>`;
       currentPokemon = null;
-      document.getElementById("resultado").innerHTML = "";
     });
 }
 
 function saveFavorite() {
-  if (!currentPokemon) {
-    alert("Primero busca un Pokémon.");
-    return;
-  }
+  if (!currentPokemon) return;
 
-  let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
-
-  const yaExiste = favoritos.some(p => p.name === currentPokemon.name);
+  const yaExiste = favoritos.some(p => p.nombre === currentPokemon.nombre);
   if (!yaExiste) {
     favoritos.push(currentPokemon);
-    localStorage.setItem("favoritos", JSON.stringify(favoritos));
-    updateFavoritesList();
-  } else {
-    alert("¡Este Pokémon ya está en tus favoritos!");
+    renderFavorites();
   }
 }
 
-function updateFavoritesList() {
-  const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+function eliminarFavorito(nombre) {
+  favoritos = favoritos.filter(p => p.nombre !== nombre);
+  renderFavorites();
+}
+
+function renderFavorites() {
   const contenedor = document.getElementById("favoritos");
+  const texto = document.getElementById("favoritoTexto");
   contenedor.innerHTML = "";
 
-  favoritos.forEach(pokemon => {
-    const div = document.createElement("div");
-    div.className = "pokemon-card favorite-card";
-    div.innerHTML = `
-      <img src="${pokemon.image}" alt="${pokemon.name}">
-      <div class="pokemon-name">${pokemon.name}</div>
-      <div class="heart-icon"><i class="bi bi-heart-fill"></i></div>
-      <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="removeFavorite('${pokemon.name}')">❌</button>
-    `;
-    contenedor.appendChild(div);
+  if (favoritos.length > 0) {
+    texto.textContent = "Aquí está tu Pokémon favorito:";
+  } else {
+    texto.textContent = "";
+  }
 
-    
+  favoritos.forEach(pokemon => {
+    const card = document.createElement("div");
+    card.className = "pokemon-card favorite-card";
+
+    card.innerHTML = `
+      <img src="${pokemon.imagen}" alt="${pokemon.nombre}">
+      <div class="pokemon-name">${pokemon.nombre}</div>
+      <i class="bi bi-heart-fill heart-icon"></i>
+      <button class="btn btn-danger position-absolute top-0 end-0 m-2" onclick="eliminarFavorito('${pokemon.nombre}')">
+        <i class="bi bi-x"></i>
+      </button>
+    `;
+
+    contenedor.appendChild(card);
   });
 }
-function removeFavorite(name) {
-  let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
-  favoritos = favoritos.filter(pokemon => pokemon.name !== name);
-  localStorage.setItem("favoritos", JSON.stringify(favoritos));
-  updateFavoritesList();
-}
-
-
-
-window.onload = updateFavoritesList;
