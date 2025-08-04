@@ -1,0 +1,61 @@
+body {
+  background-color: #f9f9f9;
+}
+
+.pokemon-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+  transition: transform 0.2s ease-in-out;
+}
+
+.pokemon-card:hover {
+  transform: scale(1.05);
+}
+
+.pokemon-card img {
+  width: 120px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.pokemon-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #2c3e50;
+}
+
+/* Card especial para favoritos */
+.favorite-card {
+  background-color: #f1f1f1;
+  position: relative;
+}
+
+.favorite-card .heart-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: crimson;
+  font-size: 1.4rem;
+}
+.favorite-card .btn-danger {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+#bgVideo {
+position: fixed;
+top: 0;
+left: 0;
+min-width: 100vw;
+min-height: 100vh;
+object-fit: cover;
+z-index: -1;
+}
