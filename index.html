@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pokémon Buscador</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    img { max-width: 150px; }
+    #resultado, #favoritos > div { margin-top: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 10px; }
+    #favoritos img { width: 80px; }
+  </style>
+</head>
+<body>
+
+  <h1>Buscador de Pokémon</h1>
+
+  <input type="text" id="pokemonInput" placeholder="Nombre del Pokémon" />
+  <button onclick="searchPokemon()">Buscar</button>
+
+  <div id="resultado"></div>
+  <button onclick="saveFavorite()">Favorito</button>
+
+  <h2>Favoritos</h2>
+  <div id="favoritos"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
